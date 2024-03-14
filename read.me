@@ -1,0 +1,63 @@
+Esse arquivo contem a introdução aos conceitos de GRUNT
+Assim como os modulos anteriores o Grunt vem junto do NODEjS
+
+Aqui temos o código de introdução de como podemos compilar informações em SASS, LESS. Criar tarefas paralelas com concurrent
+E como determinar o tempo que cada tarefa irá tomar para poder ser realizada:
+module.exports = function(grunt) {
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        less: {
+            development: {
+                files: {
+                    'main.css': 'main.less'
+                }
+            },
+            production: {
+                options: {
+                    compress: true
+                },
+                files:{
+                    'main.min.css': 'main.less'
+                }
+            }
+        },
+        sass: {
+            dist: {
+                options: {
+                    style: 'compressed'
+                },
+                files: {
+                    'main2.css': 'main.scss'
+                }
+            }
+        },
+        concurrent: {
+            target: ['olaGrunt','less', 'sass','tarefaDemorada']
+        }
+    });
+
+    // Essa é uma função com objetivo de falar olá Grunt.
+    // O const done é uma função utilizada para estipularmos o tempo de execução de uma função demorada, nesse caso foram 3000ms ou 3s
+    grunt.registerTask('olaGrunt',function(){
+        const done = this.async();
+        setTimeout(function() {
+            console.log('olá Grunt');
+            done();
+        }, 3000);
+    });
+
+    grunt.registerTask('tarefaDemorada',function(){
+        const done = this.async();
+        setTimeout(function() {
+            console.log('olá Grunt');
+            done();
+        }, 10000);
+    });
+
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-concurrent');
+
+    // Esse é o register de uma tarefa 'default'
+    grunt.registerTask('default',['concurrent']);
+};
